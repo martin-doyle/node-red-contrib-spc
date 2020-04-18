@@ -1,0 +1,51 @@
+<script type="text/x-red" data-template-name="spc">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-columns"><i class="fa fa-list"></i> Columns</span></label>
+        <input type="text" id="node-input-columns" placeholder="Comma separated column fields">
+    </div>
+    <div class="form-row">
+        <label for="node-bucketCount"><i class="icon-tag"></i> Bucket Count</label>
+        <input type="text" id="node-input-bucketCount" placeholder="50">
+    </div>
+    <div class="form-row">
+        <label for="node-keyField"><i class="icon-tag"></i> Key Field</label>
+        <input type="text" id="node-input-keyField" placeholder="Additional key field">
+    </div>
+    <div class="form-row">
+        <label for="node-typeField"><i class="icon-tag"></i> Type Field</label>
+        <input type="text" id="node-input-typeField" placeholder="Start new bucket if value of this field changes">
+    </div>
+    </div>
+        <div class="form-row">
+        <label for="node-groupField"><i class="icon-tag"></i> Group Field</label>
+        <input type="text" id="node-input-groupField" placeholder="Set additional subgroups if field exists">
+    </div>
+</script>
+
+<script type="text/javascript">
+  'use strict';
+  RED.nodes.registerType('spc', {
+    category: 'function',
+    color: '#a6bbcf',
+    defaults: {
+      name: { value: '' },
+      columns: { value: '' },
+      bucketCount: { value: 50, validate: RED.validators.number(), required: true },
+      keyField: { value: null, required: false },
+      typeField: { value: null, required: false },
+      groupField: { value: null, required: false },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'function.png',
+    label: function () {
+      return this.name || 'spc';
+    },
+    oneditprepare: function () {
+    }
+  });
+</script>

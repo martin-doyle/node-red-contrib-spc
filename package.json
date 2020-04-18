@@ -1,0 +1,43 @@
+{
+  "name": "node-red-contrib-spc",
+  "version": "0.0.1",
+  "description": "A node-red node to perform spc statistical calculations on a flow.",
+  "dependencies": {
+    "simple-statistics": "^7.0.0"
+  },
+  "devDependencies": {
+    "node-red-node-test-helper": "^0.2.0"
+  },
+  "scripts": {
+    "test": "semistandard --verbose | snazzy && mocha test/**/*_spec.js"
+  },
+  "author": {
+    "name": "Martin Doyle",
+    "email": "martin-doyle@online.de"
+  },
+  "contributors": [
+    {
+      "name": "Dean Cording",
+      "email": "dean@cording.id.au"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "node-red",
+    "statistics",
+    "spc"
+  ],
+  "bugs": {
+    "url": "https://github.com/martin-doyle/node-red-contrib-spc/issues"
+  },
+  "homepage": "https://github.com/martin-doyle/node-red-contrib-spc",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/martin-doyle/node-red-contrib-spc.git"
+  },
+  "node-red": {
+    "nodes": {
+      "spc": "spc.js"
+    }
+  }
+}
