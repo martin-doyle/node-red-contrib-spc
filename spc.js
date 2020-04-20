@@ -81,7 +81,7 @@ module.exports = function (RED) {
           node.columns.forEach(function (v) {
             item[v] = {};
             const vector = value.map(function (x, i) {
-              return x[v];
+              return parseFloat(x[v]);
             });
             item[v].sum = statistics.sum(vector);
             item[v].avg = item[v].sum / item.count;
