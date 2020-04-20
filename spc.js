@@ -85,8 +85,13 @@ module.exports = function (RED) {
             });
             item[v].sum = statistics.sum(vector);
             item[v].avg = item[v].sum / item.count;
-            item[v].sumOfSq = statistics.sampleVariance(vector);
-            item[v].std = Math.sqrt(item[v].sumOfSq);
+            if (valueLength === 0) {
+              item[v].sumOfSq = 0;
+              item[v].std = 0;
+            } else {
+              item[v].sumOfSq = statistics.sampleVariance(vector);
+              item[v].std = Math.sqrt(item[v].sumOfSq);
+            }
             if (!summary[v]) {
               summary[v] = {};
               summary[v].avgSum = 0.0;

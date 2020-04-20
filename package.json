@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-spc",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A node-red node to perform spc statistical calculations on a flow.",
   "dependencies": {
     "simple-statistics": "^7.0.0"
