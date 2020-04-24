@@ -77,7 +77,7 @@ module.exports = function (RED) {
           item.key = newDate;
           item.count = valueLength;
           summary.bucketCount++;
-          summary.bucketSize = statistics.max([item.count, summary.bucketSize]);
+          summary.bucketSize = item.count;
           node.columns.forEach(function (v) {
             item[v] = {};
             const vector = value.map(function (x, i) {
@@ -86,18 +86,22 @@ module.exports = function (RED) {
             item[v].sum = statistics.sum(vector);
             item[v].avg = item[v].sum / item.count;
             if (valueLength === 0) {
-              item[v].sumOfSq = 0;
+              item[v].variance = 0;
               item[v].std = 0;
             } else {
-              item[v].sumOfSq = statistics.sampleVariance(vector);
-              item[v].std = Math.sqrt(item[v].sumOfSq);
+              valueLength <= 1 ? item[v].variance = 0 : item[v].variance = statistics.sampleVariance(vector);
+              valueLength <= 1 ? item[v].std = 0 : item[v].std = Math.sqrt(item[v].variance);
             }
             if (!summary[v]) {
               summary[v] = {};
               summary[v].avgSum = 0.0;
+              summary[v].avgSumOfSq = 0.0;
+              summary[v].varianceSum = 0.0;
               summary[v].stdSum = 0.0;
             }
             summary[v].avgSum += item[v].avg;
+            summary[v].avgSumOfSq += item[v].avg * item[v].avg;
+            summary[v].varianceSum += item[v].variance;
             summary[v].stdSum += item[v].std;
           });
           buckets.push(item);
@@ -106,6 +110,8 @@ module.exports = function (RED) {
             summary.bucketCount--;
             node.columns.forEach(function (v) {
               summary[v].avgSum -= buckets[0][v].avg;
+              summary[v].avgSumOfSq -= item[v].avg * item[v].avg;
+              summary[v].varianceSum -= item[v].variance;
               summary[v].stdSum -= buckets[0][v].std;
             });
             buckets.shift();
@@ -120,14 +126,19 @@ module.exports = function (RED) {
           }
           node.columns.forEach(function (v) {
             summary[v].avgXBar = summary[v].avgSum / summary.bucketCount;
+            summary.bucketCount <= 1 ? summary[v].avgVariance = 0 : summary[v].avgVariance = (summary[v].avgSumOfSq - summary[v].avgSum * summary[v].avgSum / summary.bucketCount) / (summary.bucketCount - 1);
+            summary[v].varianceXBar = summary[v].varianceSum / summary.bucketCount;
             summary[v].stdXBar = summary[v].stdSum / summary.bucketCount;
+            summary[v].stdTotal = Math.sqrt(summary[v].varianceXBar + summary[v].avgVariance);
             summary[v].stdXBar6 = summary[v].stdXBar * 6;
             summary[v].avgUpperLimit = summary[v].avgXBar + spcConst.A3 * summary[v].stdXBar;
             summary[v].avgLowerLimit = summary[v].avgXBar - spcConst.A3 * summary[v].stdXBar;
+            summary[v].avgTotalUpperLimit = summary[v].avgXBar + spcConst.A3 * summary[v].stdTotal;
+            summary[v].avgTotalLowerLimit = summary[v].avgXBar - spcConst.A3 * summary[v].stdTotal;
             summary[v].stdUpperLimit = spcConst.B4 * summary[v].stdXBar;
             summary[v].stdLowerLimit = spcConst.B3 * summary[v].stdXBar;
           });
-          // msg.buckets = buckets;
+          msg.buckets = buckets;
           msg.summary = summary;
           node.send(RED.util.cloneMessage(msg));
         }
