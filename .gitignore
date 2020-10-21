@@ -109,5 +109,3 @@ dist
 # package-lock.json
 package-lock.json
 
-#test folder
-test/

@@ -14,8 +14,10 @@
  * limitations under the License.
  **/
 'use strict';
+
 module.exports = function (RED) {
   const statistics = require('simple-statistics');
+  const spcConstCalculator = require('../spc_const.js');
   const spcConsts = [
     { n: 2, d2: 1.1284, d3: 0.8525, c4: 0.7979, A2: 1.88, A3: 2.659, D3: 0, D4: 3.2665, B3: 0, B4: 3.2665 },
     { n: 3, d2: 1.6926, d3: 0.8884, c4: 0.8862, A2: 1.0233, A3: 1.954, D3: 0, D4: 2.5746, B3: 0, B4: 2.5682 },
@@ -119,10 +121,14 @@ module.exports = function (RED) {
           }
 
           if ((lastBucketSize === 0) || (summary.bucketSize !== lastBucketSize)) {
-            spcConst = spcConsts.find(function (v) {
-              lastBucketSize = summary.bucketSize;
-              return v.n === summary.bucketSize;
-            });
+            if (summary.bucketSize <= 25) {
+              spcConst = spcConsts.find(function (v) {
+                lastBucketSize = summary.bucketSize;
+                return v.n === summary.bucketSize;
+              });
+            } else {
+              spcConst = spcConstCalculator.getSpcConst(summary.bucketSize);
+            }
           }
           node.columns.forEach(function (v) {
             summary[v].avgXBar = summary[v].avgSum / summary.bucketCount;

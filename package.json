@@ -1,12 +1,13 @@
 {
   "name": "node-red-contrib-spc",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A node-red node to perform spc statistical calculations on a flow.",
   "dependencies": {
-    "simple-statistics": "^7.0.0"
+    "gamma": "^1.0.0",
+    "simple-statistics": "^7.3.0"
   },
   "devDependencies": {
-    "node-red-node-test-helper": "^0.2.0"
+    "node-red-node-test-helper": "^0.2.5"
   },
   "scripts": {
     "test": "semistandard --verbose | snazzy && mocha test/**/*_spec.js"
